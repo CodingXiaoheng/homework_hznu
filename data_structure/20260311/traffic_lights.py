@@ -1,3 +1,34 @@
+import os
+import sys
+
+def ensure_nix_shell():
+    # 1. 检查是否已在 Nix 环境中
+    if os.environ.get("IN_NIX_SHELL") is None:
+        # 获取脚本文件所在的绝对目录
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        script_name = os.path.basename(__file__)
+        
+        print(f"--- 切换目录至: {script_dir} 并启动 nix-shell ---")
+        
+        # 2. 切换当前进程的工作目录
+        os.chdir(script_dir)
+        
+        # 3. 构造命令
+        # 注意：这里 python 后面接的是 script_name，因为我们已经 cd 进去了
+        args = sys.argv[1:]
+        cmd_str = f"python {script_name} {' '.join(args)}"
+        
+        # 4. 替换进程
+        try:
+            os.execvp("nix-shell", ["nix-shell", "--run", cmd_str.strip()])
+        except FileNotFoundError:
+            print("错误：未找到 nix-shell，请确保已安装 Nix。")
+            sys.exit(1)
+
+ensure_nix_shell()
+
+# --- 本体逻辑开始 ---
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -86,4 +117,4 @@ def print_and_visualize(n):
 
 # 运行示例
 if __name__ == "__main__":
-    print_and_visualize(n=8)
+    print_and_visualize(n=5)
