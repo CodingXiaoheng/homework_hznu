@@ -205,3 +205,42 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+##LaTeX
+## --- 核心辅助文件 ---
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+## --- 参考文献相关 (BibTeX/Biber) ---
+*.bbl
+*.blg
+*.run.xml
+*.bcf
+
+## --- 列表与表格相关 ---
+*.lof
+*.lot
+
+## --- 索引相关 ---
+*.idx
+*.ilg
+*.ind
+
+## --- 演示文稿 (Beamer) 相关 ---
+*.nav
+*.snm
+*.vrb
+
+## --- 宏包产生的特定文件 ---
+*.pyg        # listings/minted 宏包
+*.thm        # ntheorem 宏包
+*_minted-* # minted 宏包的临时目录
+
+## --- 最终产物 (可选) ---
+# 如果你希望在 Git 中保留生成的 PDF，请注释掉下面这一行
+*.pdf
