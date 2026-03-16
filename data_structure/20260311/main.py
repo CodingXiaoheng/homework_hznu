@@ -1,5 +1,11 @@
-from student import Student
+from student import Student,StudentFeatureTest
 from sqrt import sqrt as sqrt
+
+test = StudentFeatureTest()
+test.test_empty_grades()
+test.test_invalid_input()
+test.test_instance_independences()
+
 
 stu = Student("Tom", 19)
 
