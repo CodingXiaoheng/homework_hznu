@@ -1,0 +1,135 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+% 页面设置
+\usepackage{geometry}
+\geometry{left=2.54cm,right=2.54cm,top=3cm,bottom=3cm}
+
+% 常用宏包
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% 链接样式设置
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+}
+
+% Python 代码格式设置
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	frame=single,
+	breaklines=true,
+	tabsize=4
+}
+
+% 标题信息
+\title{\vspace{-2cm} \textbf{实验名称 : Python 模块与类的封装实验}}
+\author{姓名 : 张恒华 \quad 学号 : 2024210222039}
+
+\begin{document}
+	
+	\maketitle
+	
+	% 实验复现沙盒提示框
+	\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,title=\textbf{实验复现沙盒使用提示}]
+		为了方便批阅与代码复现，本实验提供了一个基于浏览器的无缝远程桌面沙盒环境。
+		
+		\textbf{如何打开沙盒：}
+		\begin{enumerate}
+			\item 请使用浏览器（推荐 Chrome 或 Edge）访问沙盒地址：\\
+			\url{https://lab.rise-up.top/vnc.html}
+			\item 在连接界面输入密码：\texttt{64s647c4}，即可成功进入实验桌面。
+		\end{enumerate}
+		
+		\textbf{如何调整 noVNC 画面缩放：}
+		\begin{enumerate}
+			\item 如果发现由于分辨率问题导致画面显示不全，请将鼠标移动到浏览器窗口的\textbf{最左侧边缘}。
+			\item 点击屏幕左边缘中间浮现的小箭头，展开 noVNC 的\textbf{控制侧边栏}。
+			\item 点击侧边栏中的\textbf{齿轮图标 (Settings / 设置)}。
+			\item 找到 \textbf{Scaling Mode (缩放模式)}，将其切换为 \textbf{Local Scaling (本地缩放)}，即可让沙盒画面自动适应您的浏览器窗口大小。
+		\end{enumerate}
+	\end{tcolorbox}
+	
+	\vspace{1em}
+	
+	\section{实验目的}
+	% 在此处简要概述本实验的目的与内容。
+	\begin{enumerate}
+		\item 熟悉 Python 学习与开发环境，掌握 Python 模块的创建与导入方法。
+		\item 学习模块和类的调试与调用、理解并应用类的封装思想。
+		\item 掌握类的设计，包括属性和方法的封装，并结合模块进行组织和调用，同时学习文档字符串的使用。
+	\end{enumerate}
+	
+	\section{实验过程}
+	% 在此处详细描述实验的每个步骤，并附上相关代码片段。
+	此处记录实验的具体操作步骤。例如：如何创建 \texttt{student.py} 并定义 \texttt{Student} 类；如何在 \texttt{main.py} 中导入模块并实例化对象，以及对负数成绩输入、多个实例互不影响等场景的测试过程。
+	
+	\section{代码清单}
+	% 包括 student.py 和 main.py 的完整代码。
+	\noindent 此处仅包含非扩展内容的代码，扩展内容见沙箱或代码仓库。\\
+	代码仓库：\url{https://github.com/CodingXiaoheng/homework_hznu}
+	\subsection{\texttt{student.py}}
+	\lstinputlisting{../student.py}
+	
+	\subsection{\texttt{main.py}}
+	\lstinputlisting{../main.py}
+	
+	\section{运行结果}
+	% 截图展示运行结果，标明关键步骤的输出。
+	%	\begin{lstlisting}[language={}]
+	%	\end{lstlisting}
+	\noindent 此处省略，可在沙盒运行查看。
+	% 若需插入截图，请取消下方代码注释并将文件路径替换为实际图片路径
+	% \begin{figure}[htbp]
+		%     \centering
+		%     \includegraphics[width=0.8\textwidth]{screenshot.png}
+		%     \caption{终端运行结果截图}
+		% \end{figure}
+	
+	\section{实验思考}
+	% 在此处根据实验思考题，结合自己的理解给出回答。
+	\noindent \begin{enumerate}
+	\item \textbf{在编写类的过程中，如何使用封装来限制外部对类属性的直接访问？}\\
+		% 在此填写回答
+		1. 利用命名约定建立屏障，因为Python没有彻底的私有字段，所以主要靠约定，通过单下划线（暗示非公开API，调用方需承担接口变更风险）或双下划线（触发名称修饰）来防止外部意外访问和子类属性覆盖；\\
+		2. 使用 @property 装饰器控制读写，将方法伪装成普通属性，在底层拦截非法数据注入并集中管理逻辑，这样既让外部调用保持透明一目了然，又能保证内部架构迭代升级时不破坏API的向后兼容性；\\
+		3. 相比于裸金属语言可以直接通过不暴露内部字段的内存地址来实现物理级别的彻底隔离，Python的封装更多是语义和规范层面的约束，核心目的在于降低架构耦合度与维护成本。
+	
+	\item \textbf{如果一个模块中有多个类，如 Student 和 Teacher，如何拆分到不同的模块，并如何组织它们的导入结构？}\\
+	物理拆分与目录重构：\\
+	将原有的单一模块拆分为一个包 (Package)，即创建一个文件夹（如 models/）。按照单一职责原则，将 Student 和 Teacher 类分别放入独立的模块文件 student.py 和 teacher.py 中，实现功能层面的解耦。
+	
+	处理循环引用：\\
+	为了避免两个类互相引用时产生的死循环报错，采用局部导入 (Local Import) 或延迟导入 (Lazy Import) 的策略。即不在文件顶部导入，而是在类的方法内部根据运行上下文进行 import。这样只有在实际调用相关功能时才触发加载，确保了结构的稳健性。
+	
+	优化导入路径与接口封装：\\
+	通过在包的 \_\_init\_\_.py 文件中进行中转导入，将内部分散的模块重新“拉平”。这样外部使用者无需关心底层文件结构，只需通过 from models import Student, Teacher 即可统一调用，提升了代码的易用性和封装性。
+		
+		
+	
+	\item \textbf{封装的主要作用是什么？它在实际开发中如何帮助我们提高代码的安全性和可维护性？}\\
+	见1.
+		% 在此填写回答
+	\end{enumerate}
+	
+	\section{实验总结}
+	% 在此处总结此次实验中的收获与体会。
+	在查阅资料处理多个类拆分的思考题时，我初步接触到了包（Package）的组织形式和 \_\_init\_\_.py 的中转作用，不过目前对于更复杂的“循环引用”场景，我的应对策略可能还比较生硬，需要在以后的复杂项目中多加验证。
+	
+	在类的封装体验上，之前我习惯于直接读写变量，这次通过引入下划线命名规范和 @property 装饰器来拦截非法的成绩输入，让我体会到了保护类内部状态的好处。
+	
+	最后，在实验过程中，通过对沙盒环境的配置与复现，我初步接触到了 Nix 这一声明式配置工具，这给我带来了很大的启发。以往在配置环境时，我经常遇到“在我的电脑上能跑，换台机器就报错”的依赖冲突问题。而 Nix 通过精确控制每一个软件包的版本和环境变量，让我对环境的一致性有了更直观的认识。
+	
+\end{document}
