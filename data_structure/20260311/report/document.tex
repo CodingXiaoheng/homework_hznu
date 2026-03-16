@@ -74,8 +74,40 @@
 	
 	\section{实验过程}
 	% 在此处详细描述实验的每个步骤，并附上相关代码片段。
-	此处记录实验的具体操作步骤。例如：如何创建 \texttt{student.py} 并定义 \texttt{Student} 类；如何在 \texttt{main.py} 中导入模块并实例化对象，以及对负数成绩输入、多个实例互不影响等场景的测试过程。
-	
+	\begin{enumerate}
+		\item \textbf{模块定义与类的封装} 
+		\begin{itemize}
+			\item 创建了文件 \texttt{student.py}，并在该模块中定义了 \texttt{Student} 类 。
+			\item 根据实验要求，在类中定义了 \texttt{name}、\texttt{age} 和 \texttt{grades} 等属性，在实际代码实现中将其设为私有属性（通过双下划线前缀）以限制外部的直接访问 。
+			\item 封装了 \texttt{add\_grade} 方法用于添加成绩，并在内部增加了类型检查和值检查，拦截非数值与负数输入 。
+			\item 封装了 \texttt{get\_average\_grade} 方法计算成绩平均分，在成绩列表为空时正确返回 0 。
+			\item 封装了 \texttt{get\_details} 方法，用于返回包含姓名、年龄以及保留两位小数的平均成绩的基本信息元组 。
+			\item 使用 \texttt{@property} 装饰器提供了安全的属性访问接口，特别是针对 \texttt{grades} 属性，通过返回列表副本（\texttt{copy()}）来彻底避免外部修改破坏内部数据 。
+		\end{itemize}
+		
+		\item \textbf{测试类的设计与验证}
+		\begin{itemize}
+			\item 在 \texttt{student.py} 内部额外设计了 \texttt{StudentFeatureTest} 类，用于自动化验证边界和异常情况 。
+			\item 编写测试用例验证了学生成绩为空时的平均成绩计算逻辑 。
+			\item 编写测试用例验证了添加负数或非数值成绩（如传入字符串 \texttt{"abc"} 或 \texttt{"70"}）时的自动转换与异常捕捉情况 。
+			\item 编写测试用例验证了多个 \texttt{Student} 实例之间的数据读写是否互不影响，确保了实例的独立性 。
+		\end{itemize}
+		
+		\item \textbf{主程序编写与功能调用}
+		\begin{itemize}
+			\item 创建了主程序文件 \texttt{main.py} 。
+			\item 在 \texttt{main.py} 中导入了 \texttt{Student} 类及测试类，并创建了多个学生对象（如 Tom 和 Jerry）。
+			\item 调用对象方法为学生添加成绩、计算平均成绩，并调用 \texttt{get\_details} 打印了学生信息。
+			\item 运行 \texttt{main.py} 验证了模块导入与类功能的正确性，并在外部显式执行 \texttt{stu.grades.clear()} 以验证封装策略的安全性和有效性。
+		\end{itemize}
+		
+		\item \textbf{扩展功能实现} 
+		\begin{itemize}
+			\item 创建了独立的 \texttt{sqrt.py} 模块，用于解决正实数开根号的问题 。
+			\item 编写了 \texttt{sqrt} 函数，加入类型和负数判断逻辑，并完善了模块的文档字符串（Docstring），涵盖了功能说明、参数返回值解析、异常说明以及交互式运行示例（\texttt{>>>}） 。
+			\item 在主程序 \texttt{main.py} 中导入了该开方模块，并执行了 \texttt{sqrt(4)} 进行了最终的功能测试。
+		\end{itemize}
+	\end{enumerate}
 	\section{代码清单}
 	% 包括 student.py 和 main.py 的完整代码。
 	\noindent 此处仅包含非扩展内容的代码，扩展内容见沙箱或代码仓库。\\
