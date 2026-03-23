@@ -1,0 +1,135 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+% 页面设置
+\usepackage{geometry}
+\geometry{left=2.54cm,right=2.54cm,top=3cm,bottom=3cm}
+
+% 常用宏包
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% 链接样式设置
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+}
+
+% Python 代码格式设置
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	frame=single,
+	breaklines=true,
+	tabsize=4
+}
+
+% 标题信息
+\title{\vspace{-2cm} \textbf{实验名称 : 线性表的ADT及其Python实现}}
+\author{姓名 : 张恒华 \quad 学号 : 2024210222039}
+
+\begin{document}
+	
+	\maketitle
+	
+	% 实验复现沙盒提示框
+	\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,title=\textbf{实验复现沙盒使用提示}]
+		为了方便批阅与代码复现，本实验提供了一个基于浏览器的无缝远程桌面沙盒环境。
+		
+		\textbf{如何打开沙盒：}
+		\begin{enumerate}
+			\item 请使用浏览器（推荐 Chrome 或 Edge）访问沙盒地址：\\
+			\url{https://lab.rise-up.top/vnc.html}
+			\item 在连接界面输入密码：\texttt{64s647c4}，即可成功进入实验桌面。
+		\end{enumerate}
+	\end{tcolorbox}
+	
+	\vspace{1em}
+	
+	\section{实验目的}
+	\begin{enumerate}
+		\item 掌握线性表的定义、操作及其顺序结构与链式结构的实现 。
+		\item 熟悉整数数组的排序算法，并了解其时间复杂度 。
+		\item 理解Josephus问题及其在顺序表与链表上的实现 。
+		\item 掌握Python中类的定义与实现技巧 。
+		\item 能够分析常用数据结构和算法的复杂度 。
+	\end{enumerate}
+	
+	\section{实验过程}
+	\begin{enumerate}
+		\item \textbf{线性表ADT的实现} 
+		\begin{itemize}
+			\item 定义了抽象数据类型（ADT）的基类 \texttt{LinearList}，利用 Python 的 \texttt{abc} 模块规范了接口 。
+			\item 实现了基于 Python 列表的顺序表 \texttt{SequentialList}，提供了初始化、插入、删除、查找和获取长度等基本操作 。
+			\item 实现了基于节点类 \texttt{Node} 的双向链表 \texttt{LinkedList}，通过链接操作完成了前述所有基本操作的链式实现 。
+		\end{itemize}
+		
+		\item \textbf{整数数组排序的实现与测试}
+		\begin{itemize}
+			\item 在顺序表和链表中分别实现了归并排序（Merge Sort）算法用于整数数组排序 。
+			\item 特别针对链表结构，采用了基于指针重排的归并排序，避免了节点内数据的物理拷贝以提高效率 。
+			\item 编写了 \texttt{benchmark\_sorting} 测试函数，生成了 1000000 个随机整数的数据规模，分别记录并比较了顺序表与链表在排序中的性能差异与运行时间 。
+		\end{itemize}
+		
+		\item \textbf{Josephus问题的多版本实现}
+		\begin{itemize}
+			\item 分别使用类似顺序表与链表的结构实现了Josephus问题 。
+			\item 为了进行极限性能压测，采用了 C 语言编写了四种不同底层逻辑的求解算法，包括简单数组移动实现、状态合并优化实现、相对地址实现（类链表步长跳跃）、绝对地址实现（单向链表） 。
+			\item 进行多次不同规模（测试组数据规模 $N$ 达到几万级，$M$ 从极小到过半不等）的随机实验，测试不同人数和删除间隔下的运行时间，以全面比较顺序表与链表实现该问题的效率 。
+		\end{itemize}
+	\end{enumerate}
+	
+	\section{代码清单}
+	\noindent 
+	代码仓库：\url{https://github.com/CodingXiaoheng/homework_hznu}
+	
+	\subsection{\texttt{ADT.py}}
+	\lstinputlisting{../ADT.py}
+	
+	\section{运行结果}
+	\subsection{整数数组排序性能测试}
+	\lstinputlisting[language={}]{../ADT.txt}
+	\noindent 结论：在一百万数据规模下，双向链表的指针重排归并排序（1.7456 秒）与顺序表的基于数组切片的归并排序（1.7915 秒）效率相当，甚至略快微小幅度，两者时间复杂度均为 $O(N \log N)$ 。
+	
+	\subsection{约瑟夫环性能测试 (部分节选)}
+ 	\lstinputlisting[language={}]{../josephus.txt}
+	\noindent 结论：当 $M$ 极小（如组7的 $M=70$）时，基于链表逻辑的地址法（0.007 秒）远快于简单数组的物理移动法（0.702 秒）；但当 $M$ 极大（如组1的 $M=13432$）时，链表的遍历查找开销急剧上升，数组直接取模的方法反而更具优势 。
+	
+	\section{实验思考}
+	\noindent \begin{enumerate}
+		\item \textbf{比较冒泡排序、选择排序、插入排序在顺序表和链表中的表现，思考如何优化排序算法以提高性能。哪些排序算法更适合链表，为什么？}\\
+		冒泡、选择、插入排序在顺序表和链表中的时间复杂度通常都为 $O(N^2)$ 。在顺序表中，利用其内存连续的特性，插入排序常数较小；而在链表中，选择排序因仅需交换节点指针也可行，但总体效率依然低下 。为了提高性能，应采用 $O(N \log N)$ 的算法 。\\
+		\textbf{归并排序最适合链表} 。因为链表不支持 $O(1)$ 的随机访问，依赖随机访问的快速排序或堆排序在链表上性能会严重退化；而归并排序本质上是顺序扫描和合并，完美契合链表的线性遍历特性，同时链表在归并合并时只需 $O(1)$ 的指针修改，无需像顺序表那样额外开辟 $O(N)$ 的辅助数组用于数据拷贝，可谓兼顾了时间与空间效率 。
+		
+		\item \textbf{对Josephus问题的顺序表与链表实现进行时间复杂度分析，为什么链表在某些情况下表现得更高效？哪些情况下链表会变得不适合？}\\
+		\textbf{顺序表实现}：若采用简单的元素前移删除，每次出局需移动后续元素，时间复杂度为 $O(N^2)$ 。若使用数学公式递推或取模映射，可优化至 $O(N)$ 。\\
+		\textbf{链表实现}：每次寻找出局者需遍历 $M$ 次，出局删除节点需 $O(1)$，总时间复杂度为 $O(NM)$ 。\\
+		当 $M$ 值相对极小而 $N$ 极大时，链表避免了顺序表每次删除导致的大量数据搬运（$O(N)$），此时 $O(NM)$ 会显著快于 $O(N^2)$，链表更高效 。但当 $M$ 很大时，链表由于无法通过索引取模直接跳跃，大量的无用遍历会使 $O(NM)$ 退化为瓶颈，此时具备 $O(1)$ 随机访问取模能力的顺序表更加适合 。
+		
+		\item \textbf{如果链表的插入和删除操作都是在末尾或开头进行，其时间复杂度会是多少？链表操作在头尾与中间部分有何差异？}\\
+		若链表维护了 \texttt{head} 和 \texttt{tail} 指针，在末尾或开头进行插入和删除只需修改相邻的几个指针，时间复杂度为 $O(1)$ 。\\
+		差异在于：虽然在中间部分进行插入和删除的物理修改动作本身仍是 $O(1)$，但为了定位到该中间节点，必须从头（或尾）开始依次遍历，导致**查找步骤**的时间复杂度达到 $O(N)$ 。
+		
+		\item \textbf{实现顺序表与链表时使用了Python的类继承特性。思考如何使用继承与多态实现更优雅的代码结构，哪些类的封装有助于提高代码的可读性与可维护性？}\\
+		通过定义 \texttt{LinearList} 抽象基类，并使用 \texttt{@abstractmethod} 强制子类实现统一的接口（如 \texttt{insert}, \texttt{delete}, \texttt{search}），可以让上层业务代码只依赖抽象接口而无需关心底层的具体物理实现（多态性） 。\\
+		对内部状态（如链表的 \texttt{\_size} 计数器、\texttt{head} 节点、顺序表的内置数组 \texttt{\_data}）进行私有化封装，对外仅暴露规范的方法。这不仅防止了外部意外破坏数据结构的完整性，也使得日后无论是修改底层数组为其他高性能存储结构，还是为链表加入新特性，都不会影响到外部的调用代码，极大地提高了代码的可维护性与安全性 。
+	\end{enumerate}
+	
+	\section{实验总结}
+	通过本次实验，我系统地完成了线性表抽象数据类型（ADT）的Python实现，加深了对顺序存储结构与链式存储结构底层差异的理解 。
+	
+	在排序算法的实现中，我深刻体会到了数据结构特性对算法选择的决定性影响。链表无法随机访问的短板使其无缘常规快排，但其 $O(1)$ 级别修改指针的优势却使其成为归并排序的绝佳载体。在百万级数据的真实压测下，验证了理论上的 $O(N \log N)$ 复杂度 。
+	
+	在约瑟夫环问题的探究中，通过引入 C 语言编写不同底层架构的高性能版本，让我直观地观测到了当系统变量（如步长 $M$）发生极端变化时，链表遍历的时间消耗与数组数据搬移消耗之间的博弈，这锻炼了我根据具体应用场景（数据量、读写频次）合理选型数据结构的能力 。
+	
+\end{document}
