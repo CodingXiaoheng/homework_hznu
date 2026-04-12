@@ -111,10 +111,7 @@ class LinkedList(LinearList):
         if index < 0 or index > self._size:
             raise IndexError("Index out of bounds")
 
-        # BUG FIX: 将三个分支统一，不再复用带副作用的 insert_before/append，
-        # 而是直接内联插入逻辑，由本方法统一维护 _size 计数。
         if index == self._size:
-            # 尾部插入：直接复用 append（内部负责 _size）
             self.append(val)
             return
 

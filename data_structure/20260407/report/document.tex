@@ -1,0 +1,136 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+% 页面设置
+\usepackage{geometry}
+\geometry{left=2.54cm,right=2.54cm,top=3cm,bottom=3cm}
+
+% 常用宏包
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% 链接样式设置
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+}
+
+% Python 代码格式设置
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	frame=single,
+	breaklines=true,
+	tabsize=4
+}
+
+% 标题信息
+\title{\vspace{-2cm} \textbf{实验三：借助栈或队列结构求解迷宫问题}}
+\author{姓名 : 张恒华 \quad 学号 : 2024210222039}
+
+\begin{document}
+	
+	\maketitle
+	
+	% 实验复现沙盒提示框
+	\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,title=\textbf{实验复现沙盒使用提示}]
+		为了方便批阅与代码复现，本实验提供了一个基于浏览器的无缝远程桌面沙盒环境。
+		
+		\textbf{如何打开沙盒：}
+		\begin{enumerate}
+			\item 请使用浏览器（推荐 Chrome 或 Edge）访问沙盒地址：\\
+			\url{https://lab.rise-up.top/vnc.html}
+			\item 在连接界面输入密码：\texttt{64s647c4}，即可成功进入实验桌面。
+		\end{enumerate}
+		
+		\textbf{如何调整 noVNC 画面缩放：}
+		\begin{enumerate}
+			\item 如果发现由于分辨率问题导致画面显示不全，请将鼠标移动到浏览器窗口的\textbf{最左侧边缘}。
+			\item 点击屏幕左边缘中间浮现的小箭头，展开 noVNC 的\textbf{控制侧边栏}。
+			\item 点击侧边栏中的\textbf{齿轮图标 (Settings / 设置)}。
+			\item 找到 \textbf{Scaling Mode (缩放模式)}，将其切换为 \textbf{Local Scaling (本地缩放)}，即可让沙盒画面自动适应您的浏览器窗口大小。
+		\end{enumerate}
+	\end{tcolorbox}
+	
+	\vspace{1em}
+	
+	\section{实验目的}
+	\begin{enumerate}
+		\item 掌握栈的抽象定义类型及其顺序与链式实现
+		\item 理解实际问题计算机内部的信息表达，如用矩阵表达迷宫
+		\item 掌握算法的描述
+	\end{enumerate}
+	
+	\section{实验过程}
+	\begin{enumerate}
+		\item \textbf{尝试分别实现栈的两类基本存储结构} 
+		\begin{itemize}
+			\item \textbf{顺序栈的封装尝试}：我尝试用 Python 列表作为一段连续内存空间来存放具体内容，并使用一个引用作为栈顶位置指针来进行基本的出入操作。
+			\item \textbf{链式栈的手动实现}：通过定义 \texttt{LinkNode} 类来模拟节点之间的拼接，在完成入栈和出栈时，主要是对链表头结点进行插入和删除。另外，为了保持代码的解耦设计，这些基础数据结构被我写在了单独的文件中，未直接与寻路核心逻辑混杂。
+		\end{itemize}
+		
+		\item \textbf{迷宫寻路算法的过程模拟}
+		\begin{itemize}
+			\item \textbf{矩阵状态表示}：在设定迷宫时，仿照老师的代码使用数字 0 代表可通行的空地，1 代表墙壁。在行走过程中，将搜索过探索的位置临时标记为 2，把回溯确定作为可行路线的部分标记为 3。对于每一个位置坐标的前进测试，代码会尝试向上下左右等相邻格子进行试探。
+			\item \textbf{基于系统递归的 DFS 寻路}：出于程序性能和实现便利考虑，在这个解法中我没有显式创建一个栈对象，而是直接借用了现代编程语言函数的系统调用栈来完成了 DFS 搜索。如果前方道路走入死胡同，递归调用会在函数结束时自然返回（等效退栈）并回退探测其他分支路线。
+			\item \textbf{基于队列的 BFS 寻路探索}：作为对比验证，使用老师给出的广度优先的版本。
+		\end{itemize}
+		
+		\item \textbf{加入可视化辅助}
+		\begin{itemize}
+			\item 参考老师的代码引入 \texttt{matplotlib} 做一些基础的显示。
+			\item 通过使用色块对数组内容赋值上色，探索轨迹能够在视觉面上变得比较清晰直白一点。
+		\end{itemize}
+	\end{enumerate}
+	
+	\section{代码清单}
+	\noindent 此处展示 \texttt{myversion.py} 中包含我的迷宫递归解法和可视化绘图逻辑。由于性能原因在这部分我并未使用显式的自定义栈结构而是借助了函数自身的调用栈。\\
+	代码仓库：\url{https://github.com/CodingXiaoheng/homework_hznu}
+	
+	\subsection{\texttt{myversion.py}}
+	\lstinputlisting{../myversion.py}
+	
+	\section{运行结果}
+	\noindent 程序运行后能在命令行中打印寻得的一条路径节点坐标组，并展示基于 Python 图像引擎生成的热力结果图。
+	\begin{verbatim}
+找到路径：
+(1, 1) -> (2, 1) -> (2, 2) -> (3, 2) -> ... -> (20, 20)
+	\end{verbatim}
+	\noindent \textit{(更为直观的一键可视化测试复现请见沙盒内 \texttt{python myversion.py}。)}
+	
+	\section{实验思考}
+	\noindent \begin{enumerate}
+	\item \textbf{写出栈的抽象定义类型？}\\
+	数据对象：$D = \{a_i \mid a_i \in ElemSet, i = 1, 2, \dots, n, n \ge 0\}$\\
+	数据关系：$R1 = \{\langle a_{i-1}, a_i\rangle \mid a_{i-1}, a_i \in D, i = 2, \dots, n\}$（约定 $a_1$ 为栈底，$a_n$ 为栈顶）\\
+	基本操作：
+	\begin{itemize}
+		\item \texttt{InitStack()}：构造空栈。
+		\item \texttt{IsEmpty()}：判断是否栈空。
+		\item \texttt{Push(x)}：向栈中压入元素 x。
+		\item \texttt{Pop()}：弹出栈顶元素。
+		\item \texttt{GetTop()}：读取当前栈顶元素的状态。
+	\end{itemize}
+	
+	\item \textbf{按上述算法找到的路径是否是最快的？试证明你的论断（结合运行速度分析）。}\\
+	实验结果反映出，DFS在找解计算速度上有时更为迅捷，但不能保证找到路径的“绝对最优（短）性质”。\\
+	\textbf{执行耗时统计}：我利用辅助脚本 \texttt{mark.py} 进行了大小为 30x30 的随机生成迷宫进行 500 轮测算比对。得到的结果显示，DFS 的平均单次耗时约在 0.000122 秒上下，而队列驱动的 BFS 方案平均值则在 0.000276 秒。在这个场景下，只用递归特性的 DFS 运算比 BFS 快了大约 2.26 倍！我推测这是由于深度优先算法具有“走到底碰运气”的倾向性，使得很多时候在未完全探测空间全貌的早期阶段碰巧摸到出口就直接结算导致的。\\
+	然而，论及算法是否能拿到距离上的最短走法，队列模式（BFS）通过一层一层圈范围式广发分支排查，第一个摸到终点的位置一定位于所能达到的最小距离波上。所以 DFS 找到的只是一种可以解题的可行解，若要在现实场景里找到距离上的最短解法，在没有附加启发引导的前提下，还是借助传统队列向外波及的方法相对最为可靠。
+	\end{enumerate}
+	
+	\section{实验总结}
+	在本次实验中，我尝试手动分离并封装了基本的序列栈和链表栈供练习巩固。我也渐渐察觉到为了平衡性能与代码优雅度，在处理单一简单图搜索（如这道迷宫问题）算法的时候，直接改用系统的递归堆栈能够减少显式封装组件所拖慢的资源占用。这种性能与书写间的取舍也是一个重要的经验。
+	
+	结合测试用例所跑出的计时数据，我对两种传统搜索架构间的此消彼长有了一些直观认识——DFS 为了能碰巧更大概率极速击穿找出一条逃生解，却可能要被迫走在相当曲折丑陋的线路上；相反 BFS 保障了路径绝对的最优且直，但庞大分支维护也引发了成倍冗余开销导致平均解算极慢。我初步看出了其中端倪，但如果要解决更灵活庞大场景的问题应该还是远远不够的，其中肯定有无数我尚未涉猎的复合处理技巧。受限于时间和当前的知识储量这部分感触可能比较浅显，我希望能结合接下来的课程与学习进程把欠缺的部分慢慢充实起来。
+	
+\end{document}
