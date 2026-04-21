@@ -1,0 +1,112 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+% 页面设置
+\usepackage{geometry}
+\geometry{left=2.54cm,right=2.54cm,top=3cm,bottom=3cm}
+
+% 常用宏包
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% 链接样式设置
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+}
+
+% Python 代码格式设置
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	frame=single,
+	breaklines=true,
+	tabsize=4
+}
+
+% 标题信息
+\title{\vspace{-2cm} \textbf{实验四：顺序存储实现的优先队列}}
+\author{姓名 : 张恒华 \quad 学号 : 2024210222039}
+
+\begin{document}
+	
+	\maketitle
+	
+	% 实验复现沙盒提示框
+	\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,title=\textbf{实验复现沙盒使用提示}]
+		为了方便批阅与代码复现，本实验提供了一个基于浏览器的无缝远程桌面沙盒环境。
+		
+		\textbf{如何打开沙盒：}
+		\begin{enumerate}
+			\item 请使用浏览器（推荐 Chrome 或 Edge）访问沙盒地址：\\
+			\url{https://lab.rise-up.top/vnc.html}
+			\item 在连接界面输入密码：\texttt{64s647c4}，即可成功进入实验桌面。
+		\end{enumerate}
+		
+		\textbf{如何调整 noVNC 画面缩放：}
+		\begin{enumerate}
+			\item 如果发现由于分辨率问题导致画面显示不全，请将鼠标移动到浏览器窗口的\textbf{最左侧边缘}。
+			\item 点击屏幕左边缘中间浮现的小箭头，展开 noVNC 的\textbf{控制侧边栏}。
+			\item 点击侧边栏中的\textbf{齿轮图标 (Settings / 设置)}。
+			\item 找到 \textbf{Scaling Mode (缩放模式)}，将其切换为 \textbf{Local Scaling (本地缩放)}，即可让沙盒画面自动适应您的浏览器窗口大小。
+		\end{enumerate}
+	\end{tcolorbox}
+	
+	\vspace{1em}
+	
+	\section{实验目的}
+	\begin{enumerate}
+		\item 理解优先队列（Priority Queue）的基本概念及其应用场景。
+		\item 掌握使用顺序存储结构（Python 列表）实现优先队列的两种方法：\\
+		普通算法（基于无序/有序列表）
+		堆结构（基于堆）
+		\item 对比两种实现方式的性能差异，分析时间复杂度。
+		\item 熟练掌握堆的插入、删除、堆化（heapify）等核心算法。
+		\item 培养学生编写模块化、可测试代码的能力，并通过实验验证算法正确性。
+	\end{enumerate}
+	
+	\section{实验过程}
+	\begin{enumerate}
+		\item \textbf{普通算法（无序列表）的实现}：\\
+		起初我觉得这部分比较容易，只需要简单的追加元素即可。在编写 \texttt{insert} 方法时直接调用列表的 \texttt{append}追加，非常直白。但在提取最大值（\texttt{pop} 与 \texttt{get}）时，遇到了一点思路上的选择：我没有使用循环老老实实找最大值然后再按索引删除它，而是尝试使用了列表自带的 \texttt{sort} 重新排列元素然后再使用 \texttt{pop(-1)}。我想这种偷懒借助系统排序的做法写起来短短几行很省事，但在时间效率上可能会产生不利影响。
+		
+		\item \textbf{堆结构算法的探索}：\\
+		这部分的代码写起来磕绊比较多。如何确保一个普通一维列表在逻辑上时刻维持完全二叉树的性质是一个让我迷惑了一阵子的难点。在照着原理写 \texttt{\_\_shift\_up}（上浮）和 \texttt{\_\_shift\_down}（下沉）时，经常因为对左右子节点的索引（\texttt{2*k+1} 和 \texttt{2*k+2}）不太敏感而搞错跳跃的边界。此外，我还尝试给队列加入了支持自定义比较函数（\texttt{key}）和不同优先倾向（\texttt{reverse}）的判断，结果如果控制不当会导致判断分支有些冗杂，期间花费了一些时间调试 \texttt{index out of range} 报错。
+		
+		\item \textbf{辅助测算与比对}：\\
+		有了上述两个独立模块的代码后，我在 \texttt{TestUnit} 类中使用 \texttt{time.perf\_counter()} 给它们写了个计时测试。准备了 1000、5000 以及 10000 规模的非规律整数来连续跑插入和出队。
+	\end{enumerate}
+	
+	\section{代码清单}
+	此段引出我在本次实验依靠以上思路编写的具体源码 \texttt{pq.py}。
+	
+	\subsection{\texttt{pq.py}}
+	\lstinputlisting{../pq.py}
+	
+	\section{实验结果}
+	
+	\lstinputlisting[language={}]{../pq.txt}
+	
+	\section{分析与讨论}
+	分析上述测算出来的数据，我们可以直观发现：
+	\begin{itemize}
+		\item \textbf{在数据插入耗费上}：当有 10000 个元素时，无序列表 \texttt{SimplePQ} 连续插入总共用时约 0.0004 秒，而 \texttt{HeapPQ} 由于每次增加新数据都必须调用 \texttt{\_\_shift\_up}，这部分的开销最终体现在了 0.0033 秒上。这说明在纯粹吸收而不立刻整理的情况下，简单的列表追加其实在速度上占着明显甜头。
+		\item \textbf{在数据弹出的耗费上}：当提取操作的规模上到 5000 甚至 10000 时，差距反了过来且被夸张地拉开了。依赖临时全集 \texttt{sort} 提取重排的普通版本花了 1.19 秒来清空队列，而依赖 \texttt{O(log N)} 层层下沉来筛选新叶子的 \texttt{HeapPQ} 却只花了大概 0.022 秒。
+	\end{itemize}
+
+	\section{实验总结}
+	通过本次实验，我对队列和堆的底层区别有了更直观的认识，不过对于底层完全二叉树的数组跨跃规律我还不能说运用自如，在处理极端边界条件时仍需多加练习。
+	
+	之前编程往往习惯于碰到什么都用基本容器做简单操作，这次对比实验让我意识到，不同数据结构的适用局限与优势是共存的。即使堆在弹出阶段性能非常亮眼，但它的每次插入都要付出层层比较的潜在成本，不像简单列表追加那样立竿见影。我对数据量和算法开销之间的权重取舍有了一个更清晰的思路。目前我还不能确定自己在脱离 Python 这样便利的高级语言后能否顺畅写出一个不带 BUG 的全能堆结构，我明白自己在某些分支简化代码功力上依然不足，期待日后的课程学习中可以慢慢积累更多的见解。
+	
+\end{document}
